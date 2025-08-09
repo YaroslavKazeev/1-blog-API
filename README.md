@@ -180,6 +180,17 @@ app.<METHOD>('/blogs', (req, res) => {
 ## Things to think about
 
 - Why do you need to put the `:` in certain URLs?
-- What should you do if the file system gives an error (the `fs.readFileSync` line for example)? What is the best way of handling that?
+
+`:` means the request's parameters
+
+- What should you do if the file system gives an error (the `fs.readFileSync` line, for example)? What is the best way of handling that?
+
+I put the catch block and returned the generic error to the user. I assume that is a good practice.
+
 - Why do we use the synchronous function for reading files from the system?
+
+We used asynchronous code in the frontend to prevent 'freezing' the UI. Here, in the backend we there is no need to hide background processes; they will take as much time as they need for completion.
+
 - Should we always only send back a JSON object?
+
+There were several cases when the plain text was sent back. It depends on the requirement for designing the API
