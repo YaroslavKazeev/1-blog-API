@@ -1,8 +1,7 @@
-// const { error } = require("console");
 const express = require("express");
 const fs = require("fs");
-// const { title } = require("process");
 const app = express();
+const path = require("path");
 app.use(express.json());
 
 // YOUR CODE GOES IN HERE
@@ -59,7 +58,7 @@ app.get("/blogs/:title", (req, res) => {
     try {
       const post = fs.readFileSync(title);
       res.statusCode = 200;
-      res.setHeader("Content-type", "application/json");
+      res.setHeader("Content-type", "text-plain");
       res.end(post);
     } catch (error) {
       res.status(500);
@@ -71,8 +70,21 @@ app.get("/blogs/:title", (req, res) => {
   }
 });
 
-app.get("/", function (req, res) {
-  res.send("Hello World");
+app.get("/blogs", (req, res) => {
+  // how to get the file names of all files in a folder??
+  const entries = fs.readdirSync(__dirname, { withFileTypes: true });
+  const excludedExt = new Set([".js", ".json", ".md"]);
+  const excludedNames = new Set([".gitignore"]);
+  const files = entries
+    .filter((e) => e.isFile())
+    .map((e) => e.name)
+    .filter(
+      (name) =>
+        !excludedNames.has(name) &&
+        !excludedExt.has(path.extname(name).toLowerCase())
+    );
+  const objArr = files.map((item) => ({ title: item }));
+  res.json(objArr);
 });
 
 app.listen(3000);
